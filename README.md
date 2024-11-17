@@ -1,93 +1,42 @@
-import pandas as pd
-import re
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.naive_bayes import MultinomialNB
-from sklearn.metrics import accuracy_score, classification_report
-import gradio as gr
+This Python-based application leverages Natural Language Processing (NLP) to analyze sentiment in Hindi text. By processing user-provided input, the model accurately identifies whether the expressed sentiment is positive, negative, or neutral.
 
-# Load the dataset
-df = pd.read_csv('sen_1k.csv')  # Replace 'sen_1k.csv' with your actual CSV file path
+Key Features:
 
-# Data Preprocessing
-def clean_text(text):
-    # Clean the text by removing anything that is not a Hindi character
-    text = re.sub(r'[^\u0900-\u097F\s]', '', text)
-    return text
+Hindi Text Analysis: Effectively processes Hindi text to understand underlying emotions and sentiments.
+Sentiment Classification: Accurately categorizes text into positive, negative, or neutral categories.
+Personalized Stress-Reduction Tips: Offers tailored suggestions for stress relief based on negative sentiment analysis.
+User-Friendly Interface: A simple and intuitive Gradio interface allows users to interact with the model effortlessly.
+Customizable: The model can be further trained and improved with additional data.
+How it works:
 
-# Apply cleaning to the text column
-df['cleaned_text'] = df['text'].apply(clean_text)
+Data Preprocessing: Cleans and prepares Hindi text for analysis.
+Feature Extraction: Converts text into numerical features using TF-IDF.
+Model Training: Trains a Multinomial Naive Bayes classifier on a labeled dataset.
+Sentiment Prediction: Predicts the sentiment of new input text.
+Stress-Reduction Tips: Provides relevant suggestions for stress relief if negative sentiment is detected.
+Technologies Used:
 
-# Vectorization using TF-IDF
-vectorizer = TfidfVectorizer(max_features=5000)  # Adjust max_features based on your dataset size
-X = vectorizer.fit_transform(df['cleaned_text']).toarray()
+Python: Core programming language
+Pandas: Data manipulation and analysis
+NLTK or spaCy: Natural Language Toolkit for text processing
+Scikit-learn: Machine learning library
+Gradio: For creating a user-friendly interface
+Potential Applications:
 
-# Target labels (sentiment: positive, negative, neutral)
-y = df['label']
+Mental Health Support: Early detection of emotional distress and providing coping mechanisms.
+Customer Service: Analyzing customer feedback to improve product or service quality.
+Social Media Monitoring: Tracking public sentiment towards brands or topics.
+Research: Studying language and emotion in the context of Hindi.
+Get Started:
 
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+Clone the repository.
+Install the required dependencies (listed in requirements.txt).
+Run the Python script to start the Gradio interface.
+Contribute:
 
-# Train the model
-model = MultinomialNB()  # Initialize the model
-model.fit(X_train, y_train)  # Train the model on training data
+Feel free to contribute to this project by:
 
-# Stress-reduction measures in Hindi
-stress_free_tips = {
-    "yoga": "योग के आसन जैसे शवासन, अनुलोम-विलोम और बालासन तनाव कम करने में मदद करते हैं।",
-    "meditation": "दिन में 10-15 मिनट ध्यान करने से मन को शांति और स्थिरता मिलती है।",
-    "breathing": "गहरी सांस लेने की तकनीकें जैसे प्राणायाम मन को शांत करती हैं।",
-    "physical_activity": "नियमित व्यायाम जैसे पैदल चलना या हल्का व्यायाम तनाव को दूर करता है।",
-    "hobbies": "अपने पसंदीदा शौक जैसे चित्रकारी, संगीत सुनना, या बागवानी में समय बिताएं।",
-}
-
-# Function to predict sentiment and provide stress-free measures
-def predict_sentiment(user_input):
-    cleaned_input = clean_text(user_input)  # Clean the input text
-    vectorized_input = vectorizer.transform([cleaned_input]).toarray()  # Vectorize the input text
-    prediction = model.predict(vectorized_input)[0]  # Predict sentiment
-    
-    # Custom messages in Hindi
-    if prediction == "Positive":
-        return "व्यक्ति तनाव मुक्त है।"
-    elif prediction == "Negative":
-        tips = f"{stress_free_tips['yoga']}\n{stress_free_tips['meditation']}\n{stress_free_tips['breathing']}\n{stress_free_tips['physical_activity']}\n{stress_free_tips['hobbies']}"
-        return f"व्यक्ति तनाव में है। तनाव को कम करने के लिए सुझाव:\n\n{tips}"
-    elif prediction == "Neutral":
-        return "कोई विशेष भावना नहीं पहचानी गई।"
-    else:
-        return "त्रुटि: भावना का अनुमान नहीं लगाया जा सका।"
-
-# Create the Gradio Interface
-def sentiment_analysis_gui(input_text):
-    return predict_sentiment(input_text)
-
-# Define the Gradio interface with improvements
-interface = gr.Interface(
-    fn=sentiment_analysis_gui,
-    inputs=gr.Textbox(
-        label="हिंदी में एक वाक्य या पैराग्राफ दर्ज करें",
-        placeholder="उदाहरण: मैं आज बहुत खुश हूं।",
-        lines=3,
-    ),
-    outputs=gr.Textbox(
-        label="भावना विश्लेषण परिणाम",
-        lines=8,
-    ),
-    title="हिंदी भावना विश्लेषण",
-    description=(
-        "यह उपकरण आपके हिंदी पाठ का विश्लेषण करता है और सकारात्मक, नकारात्मक, या तटस्थ भावना की पहचान करता है।"
-        " यदि भावना नकारात्मक है, तो तनाव कम करने के सुझाव प्रदान करता है।\n\n"
-        "उदाहरण:\n"
-        "- मैं बहुत खुश हूं।\n"
-        "- मुझे चिंता महसूस हो रही है।"
-    ),
-    theme="default",  # Default theme or any other valid theme
-)
-
-# Add footer manually using gr.Markdown inside the layout
-footer_text = "यह उपकरण भावनात्मक विश्लेषण के लिए बनाया गया है। लेखक: यश शर्मा"
-footer = gr.Markdown(footer_text)
-
-# Launch the Gradio interface with footer inside the layout
-interface.launch(inline=True, share=True)
+Improving the model's accuracy.
+Expanding the language support.
+Adding more stress-reduction techniques.
+Enhancing the user interface.
