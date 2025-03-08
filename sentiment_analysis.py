@@ -40,7 +40,7 @@ stress_free_tips = {
     "physical_activity": "नियमित व्यायाम जैसे पैदल चलना या हल्का व्यायाम तनाव को दूर करता है।",
     "hobbies": "अपने पसंदीदा शौक जैसे चित्रकारी, संगीत सुनना, या बागवानी में समय बिताएं।",
 }
-
+ 
 # Function to predict sentiment and provide stress-free measures
 def predict_sentiment(user_input):
     cleaned_input = clean_text(user_input)  # Clean the input text
