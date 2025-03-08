@@ -10,7 +10,7 @@ import gradio as gr
 df = pd.read_csv('sen_1k.csv')  # Replace 'sen_1k.csv' with your actual CSV file path
 
 # Data Preprocessing
-def clean_text(text):
+def clean_text(text): 
     # Clean the text by removing anything that is not a Hindi character
     text = re.sub(r'[^\u0900-\u097F\s]', '', text)
     return text
