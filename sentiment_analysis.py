@@ -14,7 +14,7 @@ def clean_text(text):
     # Clean the text by removing anything that is not a Hindi character
     text = re.sub(r'[^\u0900-\u097F\s]', '', text)
     return text
-
+ 
 # Apply cleaning to the text column
 df['cleaned_text'] = df['text'].apply(clean_text)
 
